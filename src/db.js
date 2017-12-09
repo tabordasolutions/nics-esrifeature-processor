@@ -50,7 +50,7 @@ let upsertdb = (feedname, features = [], connectionparams) => new Promise((resol
 
 });
 
-let deleteRecordsBefore = (asofdatetime,feedname, connectionparams) => new Promise((resolves,rejects) => {
+let deleteRecordsBefore = (asofdatetime, feedname, connectionparams) => new Promise((resolves,rejects) => {
     if (!feedname || !asofdatetime) rejects(new Error('Invalid Argument(s)'));
     const client = new Client(connectionparams);
     client.connect((err) => {
@@ -58,7 +58,6 @@ let deleteRecordsBefore = (asofdatetime,feedname, connectionparams) => new Promi
             throw err;
         }
         else {
-            let returnmessage;
             client.query('BEGIN')
                 .then(() => client.query('DELETE FROM geojson_point_feeds WHERE created_at < $1 AND feedname=$2', [asofdatetime,feedname]))
                 .then(result => returnmessage = `Deleted ${result.rowCount} stale records older than ${asofdatetime}`)
@@ -66,7 +65,7 @@ let deleteRecordsBefore = (asofdatetime,feedname, connectionparams) => new Promi
                 .then(() => client.end())
                 .then(() => resolves(returnmessage))
                 .catch(e => {
-                    returnmessage = `Error occurred during processing: ${e}`;
+                    returnmessage = `Error occurred deleting records before: ${asofdatetime}, error: ${e}`;
                     client.query('ROLLBACK')
                         .then(() => console.error('Aborted transaction'))
                         .catch((e) => console.error(`Error aborting transaction: ${e}`))

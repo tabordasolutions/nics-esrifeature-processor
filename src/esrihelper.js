@@ -1,37 +1,40 @@
 const Geoservices = require('geoservices');
 
+let query = (serviceurl, queryparams, authenticationUrl, username, password) => {
+    return getAuthToken(authenticationUrl, username, password)
+        .then((tokenresult) => {return queryWithToken(serviceurl, queryparams, tokenresult)})
+};
 
-let query = (serviceparams, query_params, authorization) => new Promise((resolves, rejects) => {
-    getAuthToken(authorization.authenticationUrl,authorization.username, authorization.password)
-        .then((tokenresult) => {
+let queryWithToken = (serviceurl, queryparams, tokenresult) => new Promise((resolves, rejects) => {
             let client = new Geoservices();
-            let fs = client.featureservice(serviceparams);
+            let fs = client.featureservice({url: serviceurl});
+            let query_params = Object.assign({}, queryparams);
             query_params.token = tokenresult.token;
 
             fs.query(query_params, (err, results) => {
-                err === null ?
-                    resolves(results) :
-                    rejects(err);
-            })
-        })
-        .catch(e => rejects(e))
+                if(err === null) {
 
+                    console.log('results in esrihelper.query: ' + results);
+                    resolves(results);
+                } else {
+                    rejects(err);
+                }
+            })
 });
+
 let getAuthToken = (authenticationUrl,username, password) => new Promise((resolves,rejects) => {
     let authoptions = {
         authenticationUrl
     };
     let client = new Geoservices(authoptions);
     client.authenticate(username, password,{},(err,result) => {
-        err === null ?
+        const error = err ? err : (result.error ? result.error : null);
+        error === null ?
             resolves(result) :
-            rejects(err);
+            rejects(error);
     })
 });
 
-
-
 module.exports = exports = {
-    query: query,
-    getAuthToken: getAuthToken
+    query: query
 };

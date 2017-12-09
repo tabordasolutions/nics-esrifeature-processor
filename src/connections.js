@@ -8,14 +8,20 @@ module.exports.dbconnectionparams = {
     passworddecrypted: false
 };
 
+module.exports.feedname = (process.env.FEEDNAME ? process.env.FEEDNAME : 'unknown');
+
 module.exports.esriserviceparams = {
-    serviceurl: (process.env.SERVICEURL ? process.env.SERVICEURL : ''),
-    feedname: (process.env.FEEDNAME ? process.env.FEEDNAME : 'unknown'),
     authenticationUrl: (process.env.AUTHURL ? process.env.AUTHURL : ''),
+    serviceurl: (process.env.SERVICEURL ? process.env.SERVICEURL : ''),
+    queryparams : {
+        f: 'geojson',
+        returnGeometry: true,
+        geometryType: 'esriGeometryPoint',
+        where: '1=1',
+        outSR: '3857'
+    },
     username: (process.env.AUTHUSER ? process.env.AUTHUSER : ''),
     password: (process.env.AUTHPASSWORD ? process.env.AUTHPASSWORD :''),
-    passwordecrypted: false
+    passwordecrypted: false,
+    daysofstaledata: 7
 };
-
-
-
