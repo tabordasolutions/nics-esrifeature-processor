@@ -18,10 +18,10 @@ module.exports.esriserviceparams = {
         returnGeometry: true,
         geometryType: 'esriGeometryPoint',
         where: '1=1',
-        outSR: '3857'
+        outSR: '4326'
     },
     username: (process.env.AUTHUSER ? process.env.AUTHUSER : ''),
     password: (process.env.AUTHPASSWORD ? process.env.AUTHPASSWORD :''),
     passwordecrypted: false,
-    daysofstaledata: 7
+    dataBecomesStaleAfterDays: 7
 };
