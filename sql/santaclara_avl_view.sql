@@ -1,0 +1,27 @@
+CREATE OR REPLACE VIEW Santaclara_avl AS
+    select
+    gpf.the_geom AS location,
+    ((gpf.properties)::json ->> 'Unit_ID'::text) AS "Unit_ID",
+    ((gpf.properties)::json ->> 'Unit_Status_Desc') AS "Unit_Status_Desc",
+    ((gpf.properties)::json ->> 'Unit_Status_Code') AS "Unit_Status_Code",
+    ((gpf.properties)::json ->> 'UnitStatus') AS "UnitStatus",
+    ((gpf.properties)::json ->> 'Unit_Type') AS "Unit_Type",
+    to_char(to_timestamp( ((gpf.properties)::json ->> 'StatusTime')::numeric/1000), 'YYYY/MM/DD HH24:MI:SS TZ') AS "StatusTime",
+    ((gpf.properties)::json ->> 'Inc_ID') AS "Inc_ID",
+    ((gpf.properties)::json ->> 'Inc_Address') AS "Inc_Address",
+    ((gpf.properties)::json ->> 'CAD_Pri_Desc') AS "CAD_Pri_Desc",
+    to_char(to_timestamp(((gpf.properties)::json ->> 'LastUpdate')::numeric/1000), 'YYYY/MM/DD HH24:MI:SS TZ') AS "LastUpdate",
+    ((gpf.properties)::json ->> 'Direction') AS "Direction",
+    ((gpf.properties)::json ->> 'Speed') AS "Speed",
+    ((gpf.properties)::json ->> 'GPSStatus') AS "GPSStatus",
+    ((gpf.properties)::json ->> 'CurrentStation') AS "CurrentStation",
+    ((gpf.properties)::json ->> 'Station') AS "Station",
+    ((gpf.properties)::json ->> 'Agency') AS "Agency",
+    ((gpf.properties)::json ->> 'CAD_Pri_Code') AS "CAD_Pri_Code",
+    ((gpf.properties)::json ->> 'TrackingID') AS "TrackingID",
+    ((gpf.properties)::json ->> 'CoordX') AS "CoordX",
+    ((gpf.properties)::json ->> 'CoordY') AS "CoordY",
+    ((gpf.properties)::json ->> 'Latitude') AS Latitude,
+    ((gpf.properties)::json ->> 'Longitude') AS Longitude,
+    ((gpf.properties)::json ->> 'DisplayOrder') AS "DisplayOrder"
+    from geojson_point_feeds gpf where gpf.feedname = 'santaclara' order by ((gpf.properties)::json ->> 'StatusTime') desc;
