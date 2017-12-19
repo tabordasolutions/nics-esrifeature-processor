@@ -24,4 +24,4 @@ CREATE OR REPLACE VIEW Santaclara_avl AS
     ((gpf.properties)::json ->> 'Latitude') AS Latitude,
     ((gpf.properties)::json ->> 'Longitude') AS Longitude,
     ((gpf.properties)::json ->> 'DisplayOrder') AS "DisplayOrder"
-    from geojson_point_feeds gpf where gpf.feedname = 'santaclara' order by ((gpf.properties)::json ->> 'StatusTime') desc;
+    from geojson_point_feeds gpf where gpf.feedname = 'santaclara_avl' order by ((gpf.properties)::json ->> 'StatusTime') desc;

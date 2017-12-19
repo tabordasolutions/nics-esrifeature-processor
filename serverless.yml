@@ -1,0 +1,36 @@
+service: esri-etl
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+  stage: ${opt:stage, self:custom.defaultStage}
+  envVarsFile: ${opt:envdir, '.'}/${self:provider.stage}-vars.yml
+  region: us-west-2
+
+  vpc: ${file(${self:provider.envVarsFile}):vpc}
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - KMS:Decrypt
+      Resource: ${file(${self:provider.envVarsFile}):kmskey}
+
+  environment: ${file(${self:provider.envVarsFile}):environment}
+  environmentSecrets:
+    PGPASSWORD: '/scout/${self:provider.stage}/pgpassword'
+    ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
+
+functions:
+  santaclara-avl:
+    handler: lambda.handler
+    events: ${file(${self:provider.envVarsFile}):events}
+    description: "ETL Santaclara AVL data provided by interra group ESRI service. The processed data is stored in SCOUT database."
+    memorySize: 512
+    environment: ${file(${self:provider.envVarsFile}):santaclara_avl.environment}
+
+plugins:
+  - serverless-secrets
+
+custom:
+  defaultStage: dev

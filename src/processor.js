@@ -6,7 +6,7 @@ let etlesrifeatures = function(feedname, esriserviceparams, dbconnectionparams, 
     return esrihelper.query(esriserviceparams.serviceurl, esriserviceparams.queryparams, esriserviceparams.authenticationUrl, esriserviceparams.username, esriserviceparams.password)
             .then(result => {return getFeatureTransformerPromise(featureTransformer, result.features)})
             .then(transformedResult => {return db.upsertdb(feedname, transformedResult, dbconnectionparams)})
-            .then(result => {return prunestaledata(moment(result.timestamp).subtract(esriserviceparams.dataBecomesStaleAfterDays, 'days'), feedname, dbconnectionparams)});
+            .then(result => {return prunestaledata(moment(result.timestamp).subtract(esriserviceparams.staleDataAfterDays, 'days'), feedname, dbconnectionparams)});
 }
 
 let getFeatureTransformerPromise = (featureTransformer, result) => {

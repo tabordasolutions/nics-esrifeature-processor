@@ -11,8 +11,8 @@ module.exports.dbconnectionparams = {
 module.exports.feedname = (process.env.FEEDNAME ? process.env.FEEDNAME : 'unknown');
 
 module.exports.esriserviceparams = {
-    authenticationUrl: (process.env.AUTHURL ? process.env.AUTHURL : ''),
-    serviceurl: (process.env.SERVICEURL ? process.env.SERVICEURL : ''),
+    authenticationUrl: (process.env.ESRIAUTHURL ? process.env.ESRIAUTHURL : ''),
+    serviceurl: (process.env.ESRISERVICEURL ? process.env.ESRISERVICEURL : ''),
     queryparams : {
         f: 'geojson',
         returnGeometry: true,
@@ -20,8 +20,8 @@ module.exports.esriserviceparams = {
         where: '1=1',
         outSR: '4326'
     },
-    username: (process.env.AUTHUSER ? process.env.AUTHUSER : ''),
-    password: (process.env.AUTHPASSWORD ? process.env.AUTHPASSWORD :''),
+    username: (process.env.ESRIUSER ? process.env.ESRIUSER : ''),
+    password: (process.env.ESRISECRET ? process.env.ESRISECRET :''),
     passwordecrypted: false,
-    dataBecomesStaleAfterDays: 7
+    staleDataAfterDays: (process.env.STALEDATAAFTERDAYS ? process.env.STALEDATAAFTERDAYS : 7)
 };

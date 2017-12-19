@@ -13,8 +13,6 @@ let queryWithToken = (serviceurl, queryparams, tokenresult) => new Promise((reso
 
             fs.query(query_params, (err, results) => {
                 if(err === null) {
-
-                    console.log('results in esrihelper.query: ' + results);
                     resolves(results);
                 } else {
                     rejects(err);

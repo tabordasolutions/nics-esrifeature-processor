@@ -14,9 +14,11 @@
     "nyc": "^11.3.0"
   },
   "dependencies": {
+    "pg": "^7.3.0",
     "geoservices": "^2.0.0",
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.14",
-    "pg": "^7.3.0"
+    "serverless": "^1.24.1",
+    "serverless-secrets": "^3.0.0-beta.12"
   }
 }
