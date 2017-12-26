@@ -16,18 +16,21 @@ const features = [{"type":"Feature","id":1,"geometry":{"type":"Point","coordinat
 
 let upsertrecord_querytext = 'Select upsert_geojson_point_record($1, $2, $3, $4, $5)';
 
-describe('FeatureProcessorDAO', () => {
+describe('FeatureProcessorDAO', (done) => {
 
     it('Given no features, no db operations are performed', () => {
         const features = [];
         let spy = sinon.spy();
         let featureProcessorDAO = new FeatureProcessorDAO(dbparams, spy);
         featureProcessorDAO.upsertFeatures(feedname, features)
-            .then(result => expect(result).to.not.be.null);
-        expect(spy.called).to.be.false;
+            .then(result => {
+                expect(result).to.not.be.null;
+                expect(spy.called).to.be.false;
+            })
+            .then(done, done);
     });
 
-    describe('fails to connect to db', () => {
+    describe('fails to connect to db', (done) => {
         let failingClient = {
             connect: function (callback) {
                 let err = {message: 'failed to connect to fake db'};
@@ -41,7 +44,8 @@ describe('FeatureProcessorDAO', () => {
                 .then(result => {expect(false).to.be.true})
                 .catch(error => {
                     console.log("error: " + error);
-                    expect(error).to.not.be.null});
+                    expect(error).to.not.be.null})
+                .then(done, done);
         });
     });
 
@@ -108,7 +112,7 @@ describe('FeatureProcessorDAO', () => {
         });
     });
 
-    describe('successfully insert/updates records into db', () => {
+    describe('successfully insert/updates records into db', (done) => {
         let fakeClient = {
             connect: function (callback) {
                 callback();

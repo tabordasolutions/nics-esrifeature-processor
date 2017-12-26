@@ -9,7 +9,7 @@ esriserviceparams.passworddecrypted = true;
 
 let processor = new FeatureProcessor(feedname, esriserviceparams, dbconnectionparams);
 processor.etlesrifeatures()
-    .then(result => console.log(result + 'Done.'))
+    .then(result => console.log('Done.'))
     .catch(e => {
         console.error("Error during processing: ", e);
         process.exit(1);

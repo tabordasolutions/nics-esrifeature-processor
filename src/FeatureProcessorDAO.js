@@ -3,8 +3,8 @@ const { Client } = require('pg');
 
 function FeatureProcessorDAO(connectionparams, client) {
     this.connectionparams = connectionparams;
-    this.client = client ? client :
-        new Client(this.connectionparams);
+    //injected for testing
+    this._client = client;
 }
 
 FeatureProcessorDAO.prototype.upsertFeatures = function(feedname, features = []) {
@@ -18,61 +18,63 @@ FeatureProcessorDAO.prototype.upsertFeatures = function(feedname, features = [])
         }
 
         console.log('Current Timestamp is: ', AsOfDateLocalTZ);
+        let client = this._getClient();
             //client connect() promise doesn't behave well, so using old school callback.
-            this.client.connect((err) => {
-                if (err) {
-                    rejects(new Error(`Could not connect to dbhost ${this.connectionparams.host}:${this.connectionparams.port} - ${err.message}`));
-                } else {
-                    console.log('Connected to Db');
-                    //Start the work with chained promises.
-                    this.client.query('BEGIN')
-                        .then(() => {return Promise.all(features.map(({id, geometry, properties}) =>
-                        { this.client.query(upsertrecord_querytext, [feedname, id, AsOfDateLocalTZ, JSON.stringify(geometry), JSON.stringify(properties)]);}))})
-                        .then(() => console.log(`Successfully processed ${features.length} records`))
-                        .then(() => {return this.client.query('COMMIT')} )
-                        .then(() => console.log(`Committed transaction`))
-                        .then(() => { return this.client.end() })
-                        .then(() => console.log('Disconnected database client'))
-                        .then(() => resolves({timestamp: AsOfDateLocalTZ}))
-                        .catch(e => {
-                            console.error(`Error occurred during processing: ${e}`);
-                            this.client.query('ROLLBACK')
-                                .then(() => console.error('Aborted transaction'))
-                                .catch((e) => console.error(`Error aborting transaction: ${e}`))
-                                .then(() => {
-                                    console.error('Disconnecting Client');
-                                    this.client.end();
-                                })
-                                .catch((e) => console.error(`Error disconnecting this.client: ${e}`))
-                                .then(() => rejects(e))
-                        });
-                }
-            })
+        client.connect((err) => {
+            if (err) {
+                rejects(new Error(`Could not connect to dbhost ${this.connectionparams.host}:${this.connectionparams.port} - ${err.message}`));
+            } else {
+                console.log('Connected to Db');
+                //Start the work with chained promises.
+                client.query('BEGIN')
+                    .then(() => {return Promise.all(features.map(({id, geometry, properties}) =>
+                    { client.query(upsertrecord_querytext, [feedname, id, AsOfDateLocalTZ, JSON.stringify(geometry), JSON.stringify(properties)]);}))})
+                    .then(() => console.log(`Successfully processed ${features.length} records`))
+                    .then(() => {return client.query('COMMIT')} )
+                    .then(() => console.log(`Committed transaction`))
+                    .then(() => { return client.end() })
+                    .then(() => console.log('Disconnected database client'))
+                    .then(() => resolves({timestamp: AsOfDateLocalTZ}))
+                    .catch(e => {
+                        console.error(`Error occurred during processing: ${e}`);
+                        client.query('ROLLBACK')
+                            .then(() => console.error('Aborted transaction'))
+                            .catch((e) => console.error(`Error aborting transaction: ${e}`))
+                            .then(() => {
+                                console.error('Disconnecting Client');
+                                client.end();
+                            })
+                            .catch((e) => console.error(`Error disconnecting client: ${e}`))
+                            .then(() => rejects(e))
+                    });
+            }
+        })
     }));
 };
 
 FeatureProcessorDAO.prototype.deleteRecordsBefore = function(asofdatetime, feedname) {
     return new Promise((resolves,rejects) => {
         if (!feedname || !asofdatetime) rejects(new Error('Invalid Argument(s)'));
-        this.client.connect((err) => {
+        let client = this._getClient();
+        client.connect((err) => {
             if (err) {
                 throw err;
             }
             else {
-                this.client.query('BEGIN')
-                    .then(() => this.client.query('DELETE FROM geojson_point_feeds WHERE created_at < $1 AND feedname=$2', [asofdatetime, feedname]))
+                client.query('BEGIN')
+                    .then(() => client.query('DELETE FROM geojson_point_feeds WHERE created_at < $1 AND feedname=$2', [asofdatetime, feedname]))
                     .then(result => returnmessage = `Deleted ${result.rowCount} stale records older than ${asofdatetime}`)
-                    .then(() => this.client.query('COMMIT'))
-                    .then(() => this.client.end())
+                    .then(() => client.query('COMMIT'))
+                    .then(() => client.end())
                     .then(() => {console.log(returnmessage); resolves();})
                     .catch(e => {
                         returnmessage = `Error deleting feed ${feedname} records before ${asofdatetime} : ${e}`;
-                        this.client.query('ROLLBACK')
+                        client.query('ROLLBACK')
                             .then(() => console.error('Aborted transaction'))
                             .catch((e) => console.error(`Error aborting transaction: ${e}`))
                             .then(() => {
                                 console.error('Disconnecting Client');
-                                this.client.end();
+                                client.end();
                             })
                             .catch((e) => console.error(`Error disconnecting client: ${e}`))
                             .then(() => rejects(e))
@@ -81,5 +83,11 @@ FeatureProcessorDAO.prototype.deleteRecordsBefore = function(asofdatetime, feedn
         })
     });
 };
+
+//utility method returns injected client if available Or creates new client for each request. pg library requires new
+//    client for each transaction.
+FeatureProcessorDAO.prototype._getClient = function() {
+    return this._client ? this._client : new Client(this.connectionparams);
+}
 
 module.exports = exports = FeatureProcessorDAO;
