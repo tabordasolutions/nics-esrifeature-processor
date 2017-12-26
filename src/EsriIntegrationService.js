@@ -11,7 +11,7 @@ function EsriIntegrationService(authenticationUrl, username, password, geoServic
 
 EsriIntegrationService.prototype.query = function(serviceurl, queryparams) {
     return this.getAuthToken()
-        .then((tokenresult) => {return this.queryWithToken(serviceurl, queryparams, tokenresult)})
+        .then((tokenresult) => {console.log('About to query ESRI service.'); return this.queryWithToken(serviceurl, queryparams, tokenresult);})
         .catch(e => {throw e;});
 };
 

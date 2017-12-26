@@ -7,7 +7,7 @@ let {feedname, dbconnectionparams, esriserviceparams} = require('./src/connectio
 let handler = function(event, context, callback) {
     console.log(`Starting ETL process for feed ${feedname}`);
     let promise;
-    if(!dbconnectionparams.passworddecrypted || !esriserviceparams.tokendecrypted) {
+    if(!dbconnectionparams.passworddecrypted || !esriserviceparams.passwordecrypted) {
         console.log('Decrypting secrets');
         promise = decryptSecrets(dbconnectionparams, esriserviceparams);
     } else {
@@ -15,9 +15,11 @@ let handler = function(event, context, callback) {
         promise = Promise.resolve('No secrets to decrypt');
     }
 
-    let processor = new FeatureProcessor(feedname, esriserviceparams, dbconnectionparams);
-    promise.then(result => processor.etlesrifeatures())
-        .then( result => console.log(`ETL process for result ${result} completed successfully.`) )
+    promise.then(result => {
+            let processor = new FeatureProcessor(feedname, esriserviceparams, dbconnectionparams);
+            return processor.etlesrifeatures();
+        })
+        .then( result => console.log(`ETL process for ${feedname} completed successfully.`) )
         .catch(error => {
             console.error(`Error processing ${feedname} AVL ESRI data`, error);
             if(callback)
@@ -31,6 +33,7 @@ let decryptSecrets = function(dbconnectionparams, esriserviceparams) {
         dbconnectionparams.passworddecrypted = true;
         esriserviceparams.password = process.env.ESRISECRET;
         esriserviceparams.passworddecrypted = true;
+        console.log('secrets decrypted');
         return 'Secrets decrypted';
     });
 };

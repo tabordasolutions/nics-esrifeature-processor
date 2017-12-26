@@ -64,7 +64,7 @@ FeatureProcessorDAO.prototype.deleteRecordsBefore = function(asofdatetime, feedn
                     .then(result => returnmessage = `Deleted ${result.rowCount} stale records older than ${asofdatetime}`)
                     .then(() => this.client.query('COMMIT'))
                     .then(() => this.client.end())
-                    .then(() => resolves(returnmessage))
+                    .then(() => {console.log(returnmessage); resolves();})
                     .catch(e => {
                         returnmessage = `Error deleting feed ${feedname} records before ${asofdatetime} : ${e}`;
                         this.client.query('ROLLBACK')

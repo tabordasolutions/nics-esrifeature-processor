@@ -38,6 +38,7 @@ let pruneInvalidfFeatures = function(features) {
 
 FeatureProcessor.prototype.prunestaledata = function(olderthan = moment().subtract(30,'days'), feedname) {
     let featureProcessorDAO = new FeatureProcessorDAO(connectionparams = this.dbconnectionparams);
+    console.log('About to prune old records.');
     return featureProcessorDAO.deleteRecordsBefore(olderthan, feedname)
 };
 
