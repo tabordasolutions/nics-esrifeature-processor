@@ -24,7 +24,7 @@ provider:
 functions:
   santaclara-avl:
     handler: lambda.handler
-    events: ${file(${self:provider.envVarsFile}):events}
+    events: ${file(${self:provider.envVarsFile}):santaclara_avl.events}
     description: "ETL Santaclara AVL data provided by interra group ESRI service. The processed data is stored in SCOUT database."
     memorySize: 512
     environment: ${file(${self:provider.envVarsFile}):santaclara_avl.environment}

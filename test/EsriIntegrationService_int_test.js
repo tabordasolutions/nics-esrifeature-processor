@@ -1,6 +1,6 @@
 'use strict';
 const {expect} = require('chai');
-const esrihelper = require('../src/esrihelper');
+const EsriIntegrationService = require('../src/EsriIntegrationService');
 
 const {dbconnectionparams, esriserviceparams} = require('../src/connections');
 
@@ -30,25 +30,28 @@ const invalidauthparams = {
     invalidPassword: 'wrongpassword'
 }
 
-describe('esrihelper Integration Tests', function() {
+describe('Esri Service Integration Tests', function() {
     describe('Call Sample Feature Service', function() {
         this.timeout(5000); //using an arrow function will break this.
         it('fails to query features with invalid authorization parameters', function() {
-           return esrihelper.query(serviceurl, queryparams, authparams.authenticationUrl, invalidauthparams.username, invalidauthparams.password)
+           let esrihelper = new EsriIntegrationService(authparams.authenticationUrl, invalidauthparams.username, invalidauthparams.password);
+           return esrihelper.query(serviceurl, queryparams)
                .catch(error => {
                   expect(error).not.to.equal(null);
                   expect(error).not.to.have.property('features');
                });
         });
         it('fails to get auth token with invalid authenticationUrl', function() {
-            return esrihelper.query(serviceurl, queryparams, invalidauthparams.authenticationUrl, authparams.username, authparams.password)
+            let esrihelper = new EsriIntegrationService(invalidauthparams.authenticationUrl, authparams.username, authparams.password);
+            return esrihelper.query(serviceurl, queryparams)
                 .catch(error => {
                     expect(error).not.to.equal(null);
                     expect(error).not.to.have.property('features');
                 });
         })
         it('Returns features', function() {
-            return esrihelper.query(serviceurl, queryparams, authparams.authenticationUrl, authparams.username, authparams.password)
+            let esrihelper = new EsriIntegrationService(authparams.authenticationUrl, authparams.username, authparams.password);
+            return esrihelper.query(serviceurl, queryparams)
                 .then((result) => {
                 expect(result).to.be.an('object', 'result should be an object.');
                 expect(result).to.have.property('features');
@@ -62,7 +65,8 @@ describe('esrihelper Integration Tests', function() {
                 where: '1=1',
                 outSR: '4326'
             };
-            return esrihelper.query(serviceurl, queryparams, authparams.authenticationUrl, authparams.username, authparams.password)
+            let esrihelper = new EsriIntegrationService(authparams.authenticationUrl, authparams.username, authparams.password);
+            return esrihelper.query(serviceurl, queryparams)
                     .catch(error => {
                         expect(error).not.to.equal(null);
                     })
@@ -72,7 +76,8 @@ describe('esrihelper Integration Tests', function() {
                 serviceurl: 'http://falsyserviceurl/service/xyz',
                 feedname: 'testfeed'
             }
-            return esrihelper.query(serviceurl, queryparams, authparams.authenticationUrl, authparams.username, authparams.password)
+            let esrihelper = new EsriIntegrationService(authparams.authenticationUrl, authparams.username, authparams.password);
+            return esrihelper.query(serviceurl, queryparams)
                 .catch(error => {
                     expect(error).not.to.equal(null);
                 })

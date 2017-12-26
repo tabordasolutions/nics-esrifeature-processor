@@ -1,6 +1,5 @@
 //This will be the module for running under lambda
-const esrihelper = require('./src/esrihelper');
-const processor = require('./src/processor');
+const FeatureProcessor = require('./src/FeatureProcessor');
 const secretsPromise = require('serverless-secrets/client').load();
 
 let {feedname, dbconnectionparams, esriserviceparams} = require('./src/connections');
@@ -15,11 +14,14 @@ let handler = function(event, context, callback) {
         console.trace('No secrets to decrypt');
         promise = Promise.resolve('No secrets to decrypt');
     }
-    promise.then(result => processor.etlesrifeatures(feedname, esriserviceparams, dbconnectionparams))
+
+    let processor = new FeatureProcessor(feedname, esriserviceparams, dbconnectionparams);
+    promise.then(result => processor.etlesrifeatures())
         .then( result => console.log(`ETL process for result ${result} completed successfully.`) )
         .catch(error => {
             console.error(`Error processing ${feedname} AVL ESRI data`, error);
-            callback(e);
+            if(callback)
+                callback(error);
         });
 }
 
