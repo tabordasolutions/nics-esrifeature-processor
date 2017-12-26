@@ -2,16 +2,16 @@ const EsriIntegrationService = require('./EsriIntegrationService');
 const FeatureProcessorDAO = require('./FeatureProcessorDAO');
 let moment = require('moment');
 
-function FeatureProcessor(feedname, esriserviceparams, dbconnectionparams) {
+function FeatureProcessor(feedname, esriserviceparams, dbconnectionparams, featureProcessorDAO, esriIntegrationService) {
     this.feedname = feedname;
     this.esriserviceparams = esriserviceparams;
     this.dbconnectionparams = dbconnectionparams;
-    this.featureProcessorDAO = new FeatureProcessorDAO(connectionparams = this.dbconnectionparams);
-    this.esrihelper = new EsriIntegrationService(esriserviceparams.authenticationUrl, esriserviceparams.username, esriserviceparams.password);
+    this.featureProcessorDAO = featureProcessorDAO ? featureProcessorDAO : new FeatureProcessorDAO(connectionparams = this.dbconnectionparams);
+    this.esriIntegrationService = esriIntegrationService ? esriIntegrationService : new EsriIntegrationService(esriserviceparams.authenticationUrl, esriserviceparams.username, esriserviceparams.password);
 }
 
 FeatureProcessor.prototype.etlesrifeatures = function(featureTransformer) {
-    return this.esrihelper.query(this.esriserviceparams.serviceurl, this.esriserviceparams.queryparams)
+    return this.esriIntegrationService.query(this.esriserviceparams.serviceurl, this.esriserviceparams.queryparams)
             .then(result => {return getFeatureTransformerPromise(featureTransformer, result.features)})
             .then(transformedFeatures => {return pruneInvalidfFeatures(transformedFeatures)})
             .then(prunedFeatures => {return this.featureProcessorDAO.upsertFeatures(this.feedname, prunedFeatures)})
