@@ -7,7 +7,7 @@ let {feedname, dbconnectionparams, esriserviceparams} = require('./src/connectio
 let handler = function(event, context, callback) {
     console.log(`Starting ETL process for feed ${feedname}`);
     let promise;
-    if(!dbconnectionparams.passworddecrypted || !esriserviceparams.passwordecrypted) {
+    if(!dbconnectionparams.passworddecrypted || !esriserviceparams.passworddecrypted) {
         console.log('Decrypting secrets');
         promise = decryptSecrets(dbconnectionparams, esriserviceparams);
     } else {
@@ -33,7 +33,7 @@ let decryptSecrets = function(dbconnectionparams, esriserviceparams) {
         dbconnectionparams.passworddecrypted = true;
         esriserviceparams.password = process.env.ESRISECRET;
         esriserviceparams.passworddecrypted = true;
-        console.log('secrets decrypted');
+        console.log(`Secrets Decrypted`);
         return 'Secrets decrypted';
     });
 };
