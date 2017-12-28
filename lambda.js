@@ -11,7 +11,7 @@ let handler = function(event, context, callback) {
         console.log('Decrypting secrets');
         promise = decryptSecrets(dbconnectionparams, esriserviceparams);
     } else {
-        console.trace('No secrets to decrypt');
+        console.log('No secrets to decrypt');
         promise = Promise.resolve('No secrets to decrypt');
     }
 
