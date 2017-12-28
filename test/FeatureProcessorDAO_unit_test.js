@@ -125,7 +125,7 @@ describe('FeatureProcessorDAO', (done) => {
         it('persists features successfully', (done) => {
             let spyConnect = sinon.spy(fakeClient, 'connect');
             let spyQuery = sinon.spy(fakeClient, 'query');
-            let spyEnd = sinon.spy(fakeClient.end);
+            let spyEnd = sinon.spy(fakeClient, 'end');
 
             featureProcessorDAO.upsertFeatures(feedname, features)
                  .then(result => {
@@ -136,7 +136,7 @@ describe('FeatureProcessorDAO', (done) => {
                      expect(spyQuery.withArgs(upsertrecord_querytext, sinon.match.array).callCount).to.equal(features.length);
                      expect(spyQuery.calledWith('COMMIT')).to.be.true;
                      expect(spyQuery.callCount).to.equal(4);
-                     expect(spyEnd.called).to.be.false;
+                     expect(spyEnd.called).to.be.true;
                  })
                 .catch((e) => {
                     console.log('supposed to succeed', e);

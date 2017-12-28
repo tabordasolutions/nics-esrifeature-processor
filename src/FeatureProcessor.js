@@ -2,12 +2,12 @@ const EsriIntegrationService = require('./EsriIntegrationService');
 const FeatureProcessorDAO = require('./FeatureProcessorDAO');
 let moment = require('moment');
 
-function FeatureProcessor(feedname, esriserviceparams, dbconnectionparams, featureProcessorDAO, esriIntegrationService) {
+function FeatureProcessor(feedname, esriserviceparams, dbconnectionparams) {
     this.feedname = feedname;
     this.esriserviceparams = esriserviceparams;
     this.dbconnectionparams = dbconnectionparams;
-    this.featureProcessorDAO = featureProcessorDAO ? featureProcessorDAO : new FeatureProcessorDAO(connectionparams = this.dbconnectionparams);
-    this.esriIntegrationService = esriIntegrationService ? esriIntegrationService : new EsriIntegrationService(esriserviceparams.authenticationUrl, esriserviceparams.username, esriserviceparams.password);
+    this.featureProcessorDAO = new FeatureProcessorDAO(connectionparams = this.dbconnectionparams);
+    this.esriIntegrationService = new EsriIntegrationService(esriserviceparams.authenticationUrl, esriserviceparams.username, esriserviceparams.password);
 }
 
 FeatureProcessor.prototype.etlesrifeatures = function(featureTransformer) {
@@ -21,8 +21,6 @@ FeatureProcessor.prototype.etlesrifeatures = function(featureTransformer) {
 let getFeatureTransformerPromise = (featureTransformer, result) => {
     if(!featureTransformer) {
         return Promise.resolve(result);
-    } else if(Promise.isPromise(featureTransformer)) {
-        return featureTransformer(result);
     } else {
         return Promise.resolve(featureTransformer(result));
     }
