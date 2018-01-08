@@ -33,7 +33,7 @@ let decryptSecrets = function(dbconnectionparams, esriserviceparams) {
         dbconnectionparams.passworddecrypted = true;
         esriserviceparams.password = process.env.ESRISECRET;
         esriserviceparams.passworddecrypted = true;
-        console.log(`Secrets Decrypted`);
+        console.log(`Secrets Decrypted.`);
         return 'Secrets decrypted';
     });
 };
