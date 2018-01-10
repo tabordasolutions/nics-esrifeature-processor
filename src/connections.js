@@ -5,11 +5,10 @@ module.exports.dbconnectionparams = {
     user: (process.env.PGUSER ? process.env.PGUSER : process.env.USER),
     password: (process.env.PGPASSWORD ? process.env.PGPASSWORD : process.env.USER),
     database: (process.env.PGDATABASE ? process.env.PGDATABASE : process.env.USER),
-    passworddecrypted: false
+    passworddecrypted: false,
 };
 
 module.exports.feedname = (process.env.FEEDNAME ? process.env.FEEDNAME : 'unknown');
-
 module.exports.esriserviceparams = {
     authenticationUrl: (process.env.ESRIAUTHURL ? process.env.ESRIAUTHURL : ''),
     serviceurl: (process.env.ESRISERVICEURL ? process.env.ESRISERVICEURL : ''),
@@ -22,6 +21,6 @@ module.exports.esriserviceparams = {
     },
     username: (process.env.ESRIUSER ? process.env.ESRIUSER : ''),
     password: (process.env.ESRISECRET ? process.env.ESRISECRET :''),
-    passwordecrypted: false,
+    passworddecrypted: false,
     staleDataAfterDays: (process.env.STALEDATAAFTERDAYS ? process.env.STALEDATAAFTERDAYS : 7)
 };

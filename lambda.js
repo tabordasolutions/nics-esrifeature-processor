@@ -1,18 +1,16 @@
 //This will be the module for running under lambda
 const FeatureProcessor = require('./src/FeatureProcessor');
-const secretsPromise = require('serverless-secrets/client').load();
-
 let {feedname, dbconnectionparams, esriserviceparams} = require('./src/connections');
 
 let handler = function(event, context, callback) {
     console.log(`Starting ETL process for feed ${feedname}`);
     let promise;
-    if(!dbconnectionparams.passworddecrypted || !esriserviceparams.passworddecrypted) {
-        console.log('Decrypting secrets');
-        promise = decryptSecrets(dbconnectionparams, esriserviceparams);
-    } else {
-        console.log('No secrets to decrypt');
+    if(dbconnectionparams.passworddecrypted && esriserviceparams.passworddecrypted) {
+        console.log('No secrets to decrypts');
         promise = Promise.resolve('No secrets to decrypt');
+    } else {
+        console.log('Decrypting secretss');
+        promise = decryptSecrets(dbconnectionparams, esriserviceparams);
     }
 
     promise.then(result => {
@@ -28,6 +26,7 @@ let handler = function(event, context, callback) {
 }
 
 let decryptSecrets = function(dbconnectionparams, esriserviceparams) {
+    let secretsPromise = require('serverless-secrets/client').load();
     return secretsPromise.then(() => {
         dbconnectionparams.password = process.env.PGPASSWORD;
         dbconnectionparams.passworddecrypted = true;
