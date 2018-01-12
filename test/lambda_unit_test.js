@@ -26,7 +26,7 @@ describe('lambda', () => {
             featureprocessorstub.restore();
         });
 
-        it('without decrypting secrets', (done) => {
+        it('without encrypted secrets', (done) => {
             dbconnectionparams.passworddecrypted = true;
             esriserviceparams.passworddecrypted = true;
             secretClientMock.expects('load').never();
@@ -42,7 +42,7 @@ describe('lambda', () => {
                 .then(done, done);
         });
 
-        it('decrypting secrets', (done) => {
+        it('with encrypted secrets', (done) => {
             dbconnectionparams.passworddecrypted = false;
             esriserviceparams.passworddecrypted = false;
             secretClientMock.expects('load').once().returns(secretPromise);
@@ -51,6 +51,8 @@ describe('lambda', () => {
             lambda.handler();
             promiseresolves
                 .then(result => {
+                    expect(dbconnectionparams.passworddecrypted).to.be.true;
+                    expect(esriserviceparams.passworddecrypted).to.be.true;
                     secretClientMock.verify();
                     featureprocessorstub.verify();
 
@@ -82,7 +84,7 @@ describe('lambda', () => {
         let secretDecryptionPromise = Promise.resolve(1);
         let etlFeaturesRejectedPromise = new Promise((resolves, rejects) => {
             setTimeout(() => {
-                rejects(new Error('fake error'));
+                rejects(new Error('fake error during features etl'));
             }, 100);
         });
         let featureprocessorstub = sinon.mock(FeatureProcessor.prototype);
