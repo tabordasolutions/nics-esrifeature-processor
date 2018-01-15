@@ -52,7 +52,7 @@ describe('lambda', () => {
             promiseresolves
                 .then(result => {
                     expect(dbconnectionparams.passworddecrypted).to.be.true;
-                    expect(esriserviceparams.passworddecrypted).to.be.true;
+                    expect(esriserviceparams.authparams.passworddecrypted).to.be.true;
                     secretClientMock.verify();
                     featureprocessorstub.verify();
 

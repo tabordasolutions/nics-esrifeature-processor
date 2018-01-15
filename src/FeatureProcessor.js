@@ -7,7 +7,7 @@ function FeatureProcessor(feedname, esriserviceparams, dbconnectionparams) {
     this.esriserviceparams = esriserviceparams;
     this.dbconnectionparams = dbconnectionparams;
     this.featureProcessorDAO = new FeatureProcessorDAO(connectionparams = this.dbconnectionparams);
-    this.esriIntegrationService = new EsriIntegrationService(esriserviceparams.authenticationUrl, esriserviceparams.username, esriserviceparams.password);
+    this.esriIntegrationService = new EsriIntegrationService(esriserviceparams.authparams);
 }
 
 FeatureProcessor.prototype.etlesrifeatures = function(featureTransformer) {
