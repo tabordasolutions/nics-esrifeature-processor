@@ -55,8 +55,9 @@ describe('Esri Service Integration Tests', function() {
                 .then((result) => {
                 expect(result).to.be.an('object', 'result should be an object.');
                 expect(result).to.have.property('features');
-                expect(process.env.AUTHTOKEN).to.be.string;
-                expect(parseInt(process.env.AUTHTOKENEXPIRESAT)).greaterThan(new Date().getTime());
+                console.log("here in the enterprise");
+                expect(authparams.authtoken).to.be.string;
+                expect(parseInt(authparams.authtokenexpiresat)).greaterThan(new Date().getTime());
             });
         })
         it('fails to return features with invalid queryparams', function() {

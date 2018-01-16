@@ -9,7 +9,7 @@ let handler = function(event, context, callback) {
         console.log('No secrets to decrypts');
         promise = Promise.resolve('No secrets to decrypt');
     } else {
-        console.log('Decrypting secretss');
+        console.log('Decrypting secrets');
         promise = decryptSecrets(dbconnectionparams, esriserviceparams);
     }
 
