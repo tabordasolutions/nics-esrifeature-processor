@@ -23,9 +23,11 @@ const esriconnectionparams = {
         where: '1=1',
         outSR: '4326'
     },
-    username: 'usr',
-    password: 'pwd',
-    passwordecrypted: false,
+    authparams: {
+        username: 'usr',
+        password: 'pwd',
+        passwordecrypted: false,
+    },
     staleDataAfterDays: 7
 };
 
@@ -41,20 +43,20 @@ describe('Feature Processor', () => {
     let daoprunestaledatastub;
     let featureProcessor;
 
-    beforeEach(() => {
+    beforeEach(function() {
         querystub = sinon.stub(EsriIntegrationService.prototype, 'query');
         daoupsertfeaturesstub = sinon.stub(FeatureProcessorDAO.prototype, 'upsertFeatures');
         daoprunestaledatastub = sinon.stub(FeatureProcessorDAO.prototype, 'deleteRecordsBefore');
         featureProcessor = new FeatureProcessor(feedname, esriconnectionparams, dbconnectionparams);
     });
 
-    afterEach(() => {
+    afterEach(function() {
         querystub.restore();
         daoupsertfeaturesstub.restore();
         daoprunestaledatastub.restore();
     });
 
-    it('completes features ETL successfully', (done) => {
+    it('completes features ETL successfully', function(done) {
         querystub.withArgs(esriconnectionparams.serviceurl, esriconnectionparams.queryparams).resolves(featuresGSON);
         let AsOfDateLocalTZ = moment().tz("US/Pacific").format();
         daoupsertfeaturesstub.withArgs(feedname, featuresGSON.features).returns({timestamp: AsOfDateLocalTZ});
@@ -69,7 +71,7 @@ describe('Feature Processor', () => {
             .then(done, done);
     });
 
-    it('failure to retrieve features from ESRI fails the ETL', (done) => {
+    it('failure to retrieve features from ESRI fails the ETL', function(done) {
         querystub.withArgs(esriconnectionparams.serviceurl, esriconnectionparams.queryparams).rejects(new Error('Fake error getting features'));
         featureProcessor.etlesrifeatures()
             .then(result => {
@@ -83,7 +85,7 @@ describe('Feature Processor', () => {
             .then(done, done);
     });
 
-    it('invalid features fail to persist in db', (done) =>{
+    it('invalid features fail to persist in db', function(done) {
         let invalidfeatures = {"type":"FeatureCollection","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"features":
             [{"type":"Feature","id":1,"geometry":{"type":"Some","coordinates":[-122.09999999999997,36.900000000000034]},"properties":{"Row_ID":1,"Unit_ID":"2B7","Unit_Status_Desc":"LOGOFF","Unit_Status_Code":"08LF","StatusTime":1505246530000,"Inc_ID":"","Inc_Address":"","CAD_Pri_Desc":"","LastUpdate":null,"Direction":null,"Speed":null,"GPSStatus":0,"Unit_Type":null,"CurrentStation":null,"Station":null,"Agency":"SCCFD","UnitStatus":"UNAVAIL","CAD_Pri_Code":0,"TrackingID":null,"CoordX":null,"CoordY":null,"Latitude":36.9,"Longitude":-122.1,"DisplayOrder":10}},
              {"type":"FeatureInvalidType","id":2,"geometry":{"type":"Point","coordinates":[-122.09999999999997,36.900000000000034]},"properties":{"Row_ID":2,"Unit_ID":"2B8","Unit_Status_Desc":"LOGOFF","Unit_Status_Code":"08LF","StatusTime":1501011649000,"Inc_ID":"","Inc_Address":"","CAD_Pri_Desc":"","LastUpdate":null,"Direction":null,"Speed":null,"GPSStatus":0,"Unit_Type":null,"CurrentStation":null,"Station":null,"Agency":"SCCFD","UnitStatus":"UNAVAIL","CAD_Pri_Code":0,"TrackingID":null,"CoordX":null,"CoordY":null,"Latitude":36.9,"Longitude":-122.1,"DisplayOrder":10}},
@@ -104,7 +106,7 @@ describe('Feature Processor', () => {
             .then(done, done);
     });
 
-    it('failure to persist the features in db fails the ETL', (done) => {
+    it('failure to persist the features in db fails the ETL', function(done) {
         querystub.withArgs(esriconnectionparams.serviceurl, esriconnectionparams.queryparams).resolves(featuresGSON);
         let errormessage = 'failed to persist features';
         daoupsertfeaturesstub.withArgs(feedname, featuresGSON.features).rejects(new Error(errormessage));
@@ -121,7 +123,7 @@ describe('Feature Processor', () => {
             .then(done, done);
     });
 
-    it('failure to prune old data fails ETL', (done) => {
+    it('failure to prune old data fails ETL', function(done) {
         querystub.withArgs(esriconnectionparams.serviceurl, esriconnectionparams.queryparams).resolves(featuresGSON);
         let AsOfDateLocalTZ = moment().tz("US/Pacific").format();
         daoupsertfeaturesstub.withArgs(feedname, featuresGSON.features).returns({timestamp: AsOfDateLocalTZ});
@@ -141,7 +143,7 @@ describe('Feature Processor', () => {
             .then(done, done);
     });
 
-    it('given featuretransformer persists transformed features into db', (done) => {
+    it('given featuretransformer persists transformed features into db', function(done) {
        let featuretransformer = function(features = []) {
            let transformedfeatures = features.map(feature => {
                let transformedFeature = JSON.parse(JSON.stringify( feature ));

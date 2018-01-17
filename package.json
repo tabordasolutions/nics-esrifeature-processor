@@ -21,5 +21,8 @@
     "moment-timezone": "^0.5.14",
     "serverless": "^1.24.1",
     "serverless-secrets": "^3.0.0-beta.12"
+  },
+  "scripts": {
+    "test": "node ./node_modules/.bin/mocha"
   }
 }

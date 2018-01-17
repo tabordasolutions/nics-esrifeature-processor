@@ -29,6 +29,13 @@ functions:
     memorySize: 256
     environment: ${file(${self:provider.envVarsFile}):santaclara_avl.environment}
 
+  ventura-avl:
+    handler: lambda.handler
+    events: ${file(${self:provider.envVarsFile}):ventura_avl.events}
+    description: "ETL Ventura AVL data provided by interra group ESRI service. The data is stored in SCOUT database."
+    memorySize: 256
+    environment: ${file(${self:provider.envVarsFile}):ventura_avl.environment}
+
 plugins:
   - serverless-secrets
 
