@@ -1,22 +1,24 @@
 //This will be the module for running under lambda
 const FeatureProcessor = require('./src/FeatureProcessor');
+var AWSXRay = require('aws-xray-sdk-core');
+var AWS = AWSXRay.captureAWS(require('aws-sdk'));
 let {feedname, dbconnectionparams, esriserviceparams} = require('./src/connections');
 
 let handler = function(event, context, callback) {
     console.log(`Starting ETL process for feed ${feedname}`);
     let promise;
+
     if(dbconnectionparams.passworddecrypted && esriserviceparams.authparams.passworddecrypted) {
-        console.log('No secrets to decrypts');
-        promise = Promise.resolve('No secrets to decrypt');
+         promise = Promise.resolve('No secrets to decrypt');
     } else {
-        console.log('Decrypting secrets');
         promise = decryptSecrets(dbconnectionparams, esriserviceparams);
     }
 
     promise.then(result => {
-            let processor = new FeatureProcessor(feedname, esriserviceparams, dbconnectionparams);
-            return processor.etlesrifeatures();
-        })
+        console.log(result);
+        let processor = new FeatureProcessor(feedname, esriserviceparams, dbconnectionparams);
+        return processor.etlesrifeatures();
+    })
         .then( result => console.log(`ETL process for ${feedname} completed successfully.`) )
         .catch(error => {
             console.error(`Error processing ${feedname} AVL ESRI data`, error);
@@ -32,7 +34,6 @@ let decryptSecrets = function(dbconnectionparams, esriserviceparams) {
         dbconnectionparams.passworddecrypted = true;
         esriserviceparams.authparams.password = process.env.ESRISECRET;
         esriserviceparams.authparams.passworddecrypted = true;
-        console.log(`Secrets Decrypted.`);
         return 'Secrets decrypted';
     });
 };
