@@ -2,7 +2,7 @@
 const {expect} = require('chai');
 const EsriIntegrationService = require('../src/EsriIntegrationService');
 
-const {dbconnectionparams, esriserviceparams} = require('../src/connections');
+const {esriserviceparams} = require('../src/connections');
 
 const serviceurl = esriserviceparams.serviceurl;
 
