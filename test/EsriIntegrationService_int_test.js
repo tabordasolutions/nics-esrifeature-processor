@@ -5,9 +5,6 @@ const EsriIntegrationService = require('../src/EsriIntegrationService');
 const {dbconnectionparams, esriserviceparams} = require('../src/connections');
 
 const serviceurl = esriserviceparams.serviceurl;
-const serviceparams = {
-        url: esriserviceparams.serviceurl
-};
 
 const feedname = esriserviceparams.feedname;
 const queryparams = {
