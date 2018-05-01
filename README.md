@@ -1,44 +1,81 @@
-# nics-esrifeature-processor
-This is a Node.js based AWS lambda processor to ETL Esri point features into Scout datafeeds db. It defines multiple lambda functions to support ETL from different sources. Below is the list of supported data feeds.
-- Santaclara AVL
-- Ventura AVL
+# ESRI Feature Processor
 
-# Deployment commands
+This is a node.js-based AWS lambda processor to extract, transform and load (ETL) ESRI point features into the Scout
+data feeds database. This repo defines AWS lambda functions to ETL from Santa Clara and Venura AVLs.
+
+## Deployment
+
+This processor uses the [Serverless Framework](https://serverless.com/) for deployment.
+
 To deploy the entire cloudformation stack:
 
-sls deploy --stage <stage> --envdir <environment variable file dir>
+```
+% sls deploy --stage <stage> --envdir <environment variable file dir>
+```
 
-sls deploy --stage itest --envdir ../nics-esrifeature-vars
+For example,
 
-To deploy just the function/nodejs code changes (much faster)
+```
+% sls deploy --stage itest --envdir ../nics-esrifeature-vars
+```
 
+To deploy just the function/nodejs code changes (much faster):
+
+```
 sls deploy --stage <stage> --envdir <environment variable file dir> --function santaclara-avl
+```
 
-ex.: sls deploy --stage itest --envdir ../nics-esrifeature-vars -f santaclara-avl
+For example,
 
-Notes:
-Serverless framework - The serverless framework is utilized for deployment, see the
-documentation here: https://serverless.com/
+```
+% sls deploy --stage itest --envdir ../nics-esrifeature-vars -f santaclara-avl
+```
 
-## Environment variables
-The deployment looks for an environment file within the given --envdir directory (no trailing-slash)
-named according to the --stage argument as {stage}-vars.yml
+## Environment Variables
 
-For example: A deployment with the stage of "dev" and a envdir of "." would look for
-a dev-vars.yml file in the same directory as the serverless.yml directory.
-Ex: sls deploy --stage dev --envdir .
+The deployment looks for an environment file within the given `--envdir` directory (no trailing-slash) named according
+to the `--stage` argument. The file naming convention is `{stage}-vars.yml`.
 
-An full sample of the expected serverless variable can be found in the dev-sample-vars.yml
+For example, a deployment with the stage of `dev` and a `--envdir` of `.` will load the `dev-vars.yml` file in the same
+directory as the `serverless.yml` file.
 
-### Encryption/Decryption of secret environment variables.
-The encrypted variables for PGPASSWORD and ESRISECRET are retrieved from AWS SSM. As such, a valid kms
-decryption key arn must be specified in order for these environment variables to be decrypted. The servlerless deployment
-script grant the lambda role access to the key specified in the {stage}-vars.yml for the stage.
+An full sample of the expected serverless variables can be found in the dev-sample-vars.yml
 
-SSM variable naming is based on the deployment stage as below. This can be changed in the serverless.yml file:
-PGPASSWORD - /scout/{stage}/pgpassword
-ESRISECRET - /interragroup/{stage}/esri-service-secret
+This deployment leverages [serverless-secrets plugin](https://github.com/trek10inc/serverless-secrets) to store
+paramters to the lambda function.
 
-The serverless-secrets plugin is utilized at runtime to provide decryption of secrets. For more information,
-see the documentation: https://github.com/trek10inc/serverless-secrets
+AWS stores these parameters in the Systems Manager parameter store. These parameters are encrypted in the parameter
+store and require an AWS Key Management Service (KMS) key. This key is specified in the environment file.
+ 
+The following table contains the variables used in this repository:
 
+| Variable              | SSM Parmeter Name                         | Default Value |
+| ------------------    | ----------------------------------------- | ------------- |
+| ESRIAUTHURL           |                                           |               |
+| ESRISECRET            | /interragroup/{stage}/esri-service-secret |               |
+| ESRISERVICEURL        |                                           |               |
+| ESRIUSER              |                                           |               |
+| FEEDNAME              |                                           | unknown       |
+| PGDATABASE            |                                           | $USER         |
+| PGHOST                |                                           | localhost     |
+| PGPASSWORD            | /scout/{stage}/pgpassword                 | $USER         |
+| PGPORT                |                                           | 5432          |
+| PGUSER                |                                           | $USER         |
+| STALEDATAAFTERDAYS    |                                           | 7             |
+| TOKENEXPIRESINMINUTES |                                           | 120           |
+
+## Testing
+
+You will need Docker and Docker Compose installed.
+ 
+Test with the following command:
+
+```
+% docker-compose up --abort-on-container-exit --exit-code-from esri_feature_proc
+```
+
+Note that Docker Compose references a preconfigured database image hosted using the AWS Elastic Container Registry
+(ECR). You will need to use Docker to log into the registry before Docker will be able to pull the database image.
+
+Refer to the [AWS ECR documentation](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html)
+for more information.
