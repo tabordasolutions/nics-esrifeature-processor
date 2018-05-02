@@ -67,15 +67,20 @@ The following table contains the variables used in this repository:
 ## Testing
 
 You will need Docker and Docker Compose installed.
+
+Setup to run tests: Note that Docker Compose references a preconfigured database image hosted using the AWS Elastic Container Registry
+(ECR). You will need to use Docker to log into the registry before Docker will be able to pull the database image.
+Sourcing in test.env as shown below takes care of this if you have AWS credentials setup.
+
+Refer to the [AWS ECR documentation](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html)
+for more information.
+ 
+```
+source test.env
+```
  
 Test with the following command:
 
 ```
 % docker-compose up --abort-on-container-exit --exit-code-from esri_feature_proc
 ```
-
-Note that Docker Compose references a preconfigured database image hosted using the AWS Elastic Container Registry
-(ECR). You will need to use Docker to log into the registry before Docker will be able to pull the database image.
-
-Refer to the [AWS ECR documentation](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_AWSCLI.html)
-for more information.
