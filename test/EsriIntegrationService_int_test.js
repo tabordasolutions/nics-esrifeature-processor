@@ -19,7 +19,7 @@ const authparams = esriserviceparams.authparams;
 
 describe('Esri Service Integration Tests', function() {
     describe('Call Sample Feature Service', function() {
-        this.timeout(5000); //using an arrow function will break this.
+        this.timeout(20000); //using an arrow function will break this.
         it('fails to query features with invalid authorization parameters', function() {
            let invalidauthparams = {
                authenticationUrl: authparams.authenticationUrl,

@@ -1,0 +1,22 @@
+version: "2.1"
+services:
+  esri_feature_proc:
+    build: .
+    command: npm test
+    environment:
+      - "ESRIUSER=NICS_CALOES"
+      - "ESRIAUTHURL=https://apps.intterragroup.com/arcgis/tokens/generateToken"
+      - "ESRISERVICEURL=https://apps.intterragroup.com/arcgis/rest/services/NICS/SCCFDAVLResources/MapServer/0"
+      - "ESRISECRET=gFtP6aP"
+      - "FEEDNAME=santaclara_avl"
+      - "PGHOST=postgis"
+      - "PGUSER=nics"
+      - "PGPASSWORD=nics"
+      - "PGDATABASE=nics_datafeeds"
+    volumes:
+      - .:/app
+
+  postgis:
+    image: 618209257270.dkr.ecr.us-west-2.amazonaws.com/nics/postgis:baseline
+    ports:
+      - "5432:5432"
