@@ -32,12 +32,16 @@ EsriIntegrationService.prototype.queryWithToken = function(serviceurl, querypara
 };
 
 EsriIntegrationService.prototype.getAuthToken = function() {
+    if(!(this.authparams.username && this.authparams.password)) {
+        console.log('Username or password are empty, no token generated');
+        return Promise.resolve(null);
+    }
     if(this.authparams.authtoken && this.authparams.authtokenexpiresat > (new Date()).getTime()) {
         console.log('Reusing old token');
         return Promise.resolve(this.authparams.authtoken);
     }
     return new Promise((resolves,rejects) => {
-        this.geoServicesClient.authenticate(username = this.authparams.username, password = this.authparams.password, {expiration : this.authparams.expireauthtokeninminutes}, (err,result) => {
+        this.geoServicesClient.authenticate(username = this.authparams.username, password = this.authparams.password, {expiration : this.authparams.expireauthtokeninminutes, client: this.authparams.client}, (err,result) => {
             const error = err ? err : (result.error ? result.error : null);
             if(error === null) {
                 this._saveauthtoken(result); //save token for next run until it expires.

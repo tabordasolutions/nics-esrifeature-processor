@@ -27,5 +27,6 @@ module.exports.esriserviceparams = {
         expireauthtokeninminutes: (process.env.TOKENEXPIRESINMINUTES ? process.env.TOKENEXPIRESINMINUTES : 120),
         authtoken: '',
         authtokenexpiresat: new Date().getTime(),
+        client: (process.env.CLIENT_ID_FOR_AUTH ? process.env.CLIENT_ID_FOR_AUTH : ''),
     },
 };
