@@ -4,4 +4,5 @@ montevista-units-avl:
   description: "ETL Monte Vista Units AVL data provided by ChulaVista ESRI service. The data is stored in SCOUT database."
   memorySize: 256
   timeout: 4
+  reservedConcurrency: 1
   environment: ${file(${self:provider.envVarsFile}):montevista_units_avl.environment}

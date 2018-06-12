@@ -4,6 +4,7 @@ santaclara-avl:
   description: "ETL Santaclara AVL data provided by interra group ESRI service. The data is stored in SCOUT database"
   memorySize: 256
   timeout: 8
+  reservedConcurrency: 1
   environment: ${file(${self:provider.envVarsFile}):santaclara_avl.environment}
   environmentSecrets:
     ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
@@ -14,6 +15,7 @@ ventura-avl:
   description: "ETL Ventura AVL data provided by interra group ESRI service. The data is stored in SCOUT database"
   memorySize: 256
   timeout: 6
+  reservedConcurrency: 1
   environment: ${file(${self:provider.envVarsFile}):ventura_avl.environment}
   environmentSecrets:
     ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
