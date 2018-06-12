@@ -1,13 +1,13 @@
 const Geoservices = require('geoservices');
 
-function EsriIntegrationService(authparams) {
-    this.authparams = authparams;
-    let authenticationUrl = authparams.authenticationUrl;
-    let authoptions = {
-        authenticationUrl
-    };
-    this.geoServicesClient = new Geoservices(authoptions);
-};
+function EsriIntegrationService(authparams, geoServicesClient = null) {
+        this.authparams = authparams;
+        let authenticationUrl = authparams.authenticationUrl;
+        let authoptions = {
+            authenticationUrl
+        };
+    this.geoServicesClient = geoServicesClient ? geoServicesClient : new Geoservices(authoptions);
+}
 
 EsriIntegrationService.prototype.query = function(serviceurl, queryparams) {
     return this.getAuthToken()
@@ -32,8 +32,7 @@ EsriIntegrationService.prototype.queryWithToken = function(serviceurl, querypara
 };
 
 EsriIntegrationService.prototype.getAuthToken = function() {
-    if(!(this.authparams.username && this.authparams.password)) {
-        console.log('Username or password are empty, no token generated');
+    if(!this.authparams.secureService) {
         return Promise.resolve(null);
     }
     if(this.authparams.authtoken && this.authparams.authtokenexpiresat > (new Date()).getTime()) {

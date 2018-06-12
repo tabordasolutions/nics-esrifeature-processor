@@ -20,6 +20,7 @@ module.exports.esriserviceparams = {
     },
     staleDataAfterDays: (process.env.STALEDATAAFTERDAYS ? process.env.STALEDATAAFTERDAYS : 7),
     authparams: {
+        secureService: (process.env.SECURESERVICE ? (process.env.SECURESERVICE == 'true') : false),
         authenticationUrl: (process.env.ESRIAUTHURL ? process.env.ESRIAUTHURL : ''),
         username: (process.env.ESRIUSER ? process.env.ESRIUSER : ''),
         password: (process.env.ESRISECRET ? process.env.ESRISECRET : ''),
