@@ -3,6 +3,7 @@ service: esri-etl
 provider:
   name: aws
   runtime: nodejs6.10
+  timeout: 6
 
   stage: ${opt:stage, self:custom.defaultStage}
   envVarsFile: ${opt:envdir, '.'}/${self:provider.stage}-vars.yml
@@ -18,23 +19,11 @@ provider:
 
   environment: ${file(${self:provider.envVarsFile}):environment}
   environmentSecrets:
-    PGPASSWORD: '/scout/${self:provider.stage}/pgpassword'
-    ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
+      PGPASSWORD: '/scout/${self:provider.stage}/pgpassword'
 
 functions:
-  santaclara-avl:
-    handler: lambda.handler
-    events: ${file(${self:provider.envVarsFile}):santaclara_avl.events}
-    description: "ETL Santaclara AVL data provided by interra group ESRI service. The data is stored in SCOUT database."
-    memorySize: 256
-    environment: ${file(${self:provider.envVarsFile}):santaclara_avl.environment}
-
-  ventura-avl:
-    handler: lambda.handler
-    events: ${file(${self:provider.envVarsFile}):ventura_avl.events}
-    description: "ETL Ventura AVL data provided by interra group ESRI service. The data is stored in SCOUT database."
-    memorySize: 256
-    environment: ${file(${self:provider.envVarsFile}):ventura_avl.environment}
+  - ${file(./serverless-config/interra-group-avl-functions.yml)}
+  - ${file(./serverless-config/chulavista-avl-functions.yml)}
 
 plugins:
   - serverless-secrets
