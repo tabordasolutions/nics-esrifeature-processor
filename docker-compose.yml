@@ -8,6 +8,7 @@ services:
       - "ESRIAUTHURL=https://apps.intterragroup.com/arcgis/tokens/generateToken"
       - "ESRISERVICEURL=https://apps.intterragroup.com/arcgis/rest/services/NICS/SCCFDAVLResources/MapServer/0"
       - "ESRISECRET=gFtP6aP"
+      - "SECURESERVICE=true"
       - "FEEDNAME=santaclara_avl"
       - "PGHOST=postgis"
       - "PGUSER=nics"
