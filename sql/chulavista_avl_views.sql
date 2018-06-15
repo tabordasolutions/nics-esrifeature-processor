@@ -9,7 +9,7 @@ CREATE OR REPLACE VIEW public.montevista_units_avl AS
     COALESCE(gpf.properties::json ->> 'UnitLocation_Longitude'::text, 'Unavailable'::text) as "Longitude",
     'Point'::text AS "Shape",
     gpf.properties::json ->> 'VehicleID'::text as "VehicleID",
-    COALESCE(gpf.properties::json ->> 'Description'::text,'Unavailable'::text) as "Description",
+    COALESCE(NULLIF(gpf.properties::json ->> 'Description'::text, ''),'Unavailable'::text) as "Description",
     COALESCE(gpf.properties::json ->> 'JurisdictionID'::text, 'Unavailable'::text) as "JurisdictionID"
    FROM geojson_point_feeds gpf
   WHERE gpf.feedname::text = 'montevista_units_avl'::text
