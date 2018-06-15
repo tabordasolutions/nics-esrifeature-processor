@@ -21,7 +21,7 @@
     "moment": "^2.19.1",
     "moment-timezone": "^0.5.14",
     "pg": "^7.3.0",
-    "serverless": "^1.27.1",
+    "serverless": "^1.27.3",
     "serverless-secrets": "tabordasolutions/serverless-secrets"
   }
 }
