@@ -22,6 +22,6 @@
     "moment-timezone": "^0.5.14",
     "pg": "^7.3.0",
     "serverless": "^1.27.1",
-    "serverless-secrets": "tabordasolutions/serverless-secrets#fix-fn-level-secrets"
+    "serverless-secrets": "tabordasolutions/serverless-secrets"
   }
 }
