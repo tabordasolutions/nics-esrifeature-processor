@@ -27,8 +27,8 @@ CREATE OR REPLACE VIEW public.heartland_units_avl AS
     COALESCE(gpf.properties::json ->> 'LocationCity'::text, 'Unavailable'::text) AS "City",
     COALESCE(gpf.properties::json ->> 'Heading'::text, '0'::text) AS "Heading",
     COALESCE(gpf.properties::json ->> 'Speed'::text, '0'::text) AS "Speed",
-    COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision), 'YYYY/MM/DD HH:MI:SS AM'::text), ' '::text) AS "UpdatedAt_UTC",
-    COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime'::text)::numeric) / 1000::numeric)::double precision), 'YYYY/MM/DD HH:MI:SS AM'::text), ' '::text) AS "UpdatedAt_LocalTime",
+    COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime'::text)::numeric) / 1000::numeric)::double precision), 'YYYY/MM/DD HH:MI:SS AM PT'::text), ' '::text) || '<br>' ||
+    COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision), 'YYYY/MM/DD HH:MI:SS AM TZ'::text), ' '::text) AS "UpdatedAt",
     gpf.properties::json ->> 'OBJECTID'::text AS "ObjectID",
     'Point'::text AS "Shape",
     gpf.properties::json ->> 'IncidentTrackingID'::text AS "IncidentTrackingID",
