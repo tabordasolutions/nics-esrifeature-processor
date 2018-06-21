@@ -6,7 +6,9 @@ provider:
   timeout: 6
 
   stage: ${opt:stage, self:custom.defaultStage}
-  envVarsFile: ${opt:envdir, '.'}/${self:provider.stage}-vars.yml
+  envVarsFile: ${opt:envdir, '.'}/${self:provider.stage}-vars.yml #environment properties common to all functions
+  interraEnvVarsFile: ${opt:envdir, '.'}/interra/${self:provider.stage}-vars.yml #environment properties for functions processing Interra Group data
+  chulavistaEnvVarsFile: ${opt:envdir, '.'}/chulavista/${self:provider.stage}-vars.yml #environment properties for functions processing Chulavista Group data
   region: us-west-2
 
   vpc: ${file(${self:provider.envVarsFile}):vpc}
@@ -22,8 +24,8 @@ provider:
       PGPASSWORD: '/scout/${self:provider.stage}/pgpassword'
 
 functions:
-  - ${file(./serverless-config/interra-group-avl-functions.yml)}
-  - ${file(./serverless-config/chulavista-avl-functions.yml)}
+  - ${file(./serverless-config/interra-group-avl-functions.yml)} #functions processing Interra Group data
+  - ${file(./serverless-config/chulavista-avl-functions.yml)} #functions processing Chulavista Group data
 
 plugins:
   - serverless-secrets

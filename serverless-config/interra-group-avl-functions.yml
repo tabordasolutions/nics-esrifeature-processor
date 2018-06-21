@@ -1,21 +1,21 @@
 santaclara-avl:
   handler: lambda.handler
-  events: ${file(${self:provider.envVarsFile}):santaclara_avl.events}
+  events: ${file(${self:provider.interraEnvVarsFile}):santaclara_avl.events}
   description: "ETL Santaclara AVL data provided by interra group ESRI service. The data is stored in SCOUT database"
   memorySize: 256
   timeout: 8
   reservedConcurrency: 1
-  environment: ${file(${self:provider.envVarsFile}):santaclara_avl.environment}
+  environment: ${file(${self:provider.interraEnvVarsFile}):santaclara_avl.environment}
   environmentSecrets:
     ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
 
 ventura-avl:
   handler: lambda.handler
-  events: ${file(${self:provider.envVarsFile}):ventura_avl.events}
+  events: ${file(${self:provider.interraEnvVarsFile}):ventura_avl.events}
   description: "ETL Ventura AVL data provided by interra group ESRI service. The data is stored in SCOUT database"
   memorySize: 256
   timeout: 6
   reservedConcurrency: 1
-  environment: ${file(${self:provider.envVarsFile}):ventura_avl.environment}
+  environment: ${file(${self:provider.interraEnvVarsFile}):ventura_avl.environment}
   environmentSecrets:
     ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
