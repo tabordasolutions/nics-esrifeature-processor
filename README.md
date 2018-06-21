@@ -44,7 +44,7 @@ to the `--stage` argument & ESRI Service provider. It looks for couple of differ
 1. File with environment properties common to all functions: The file naming convention `{stage}-vars.yml`.
 2. Files with environment properties specific to each ESRI Service provider: The file naming convention for functions specific to a ESRI service provider is {ESRI_Provider}/{stage}-vars.yml.
 
-For example, santaclara_avl & ventura_avl functions process data from Interra Group ESRI service provider. Hence, when deploying these functions to stage `itest` with `envdir` of '.', serverless
+For example, santaclara_avl & ventura_avl functions process data from Interra Group ESRI service provider. Hence, when deploying these functions to stage `itest` with `envdir` of `.`, serverless
 looks for files itest-vars.yml & interra/itest-vars.yml in the same directory as `serverless.yml` file.
 
 An full sample of the expected serverless variables can be found in the dev-sample-vars.yml
