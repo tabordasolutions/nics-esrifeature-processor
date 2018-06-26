@@ -55,7 +55,7 @@ CREATE OR REPLACE VIEW public.northcomm_units_avl AS
     gpf.properties::json ->> 'Master_Incident_ID'::text AS "MasterIncidentID",
     gpf.properties::json ->> 'AgencyID'::text AS "AgencyID",
     'Point'::text AS "Shape",
-    to_char(created_at AT TIME ZONE 'US/Pacific', 'YYYY/MM/DD HH:MI:SS "Pacific Time"') AS "SCOUTUpdatedAt"
+    to_char(created_at AT TIME ZONE 'US/Pacific', 'YYYY/MM/DD HH:MI:SS AM PT') AS "SCOUTUpdatedAt"
    FROM geojson_point_feeds gpf
   WHERE gpf.feedname::text = 'northcomm_units_avl'::text
   ORDER BY (gpf.properties::json ->> 'StatusTime'::text) DESC;
