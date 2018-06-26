@@ -15,3 +15,12 @@ heartland-units-avl:
   timeout: 4
   reservedConcurrency: 1
   environment: ${file(${self:provider.chulavistaEnvVarsFile}):heartland_units_avl.environment}
+
+northcomm-units-avl:
+  handler: lambda.handler
+  events: ${file(${self:provider.chulavistaEnvVarsFile}):northcomm_units_avl.events}
+  description: "ETL NorthComm Units AVL data provided by ChulaVista ESRI service. The data is stored in SCOUT database."
+  memorySize: 256
+  timeout: 4
+  reservedConcurrency: 1
+  environment: ${file(${self:provider.chulavistaEnvVarsFile}):northcomm_units_avl.environment}
