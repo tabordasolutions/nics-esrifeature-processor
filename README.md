@@ -3,6 +3,12 @@
 This is a node.js-based AWS lambda processor to extract, transform and load (ETL) ESRI point features into the Scout
 data feeds database. This repo defines AWS lambda functions to ETL from Santa Clara and Venura AVLs.
 
+Function definitions are organized by ESRI service provider names. `serverless.yml` references yml files under serverless-config directory.
+They are named as `{ESRI_Provider}-functions.yml`
+
+For example, santaclara_avl & ventura_avl functions process data from Interra Group ESRI service. Hence, function definitions can be found in
+serverless-config/interra-group-avl-functions.yml.
+
 ## Deployment
 
 This processor uses the [Serverless Framework](https://serverless.com/) for deployment.
@@ -33,11 +39,13 @@ For example,
 
 ## Environment Variables
 
-The deployment looks for an environment file within the given `--envdir` directory (no trailing-slash) named according
-to the `--stage` argument. The file naming convention is `{stage}-vars.yml`.
+The deployment looks for environment files within the given `--envdir` directory (no trailing-slash) named according
+to the `--stage` argument & ESRI Service provider. It looks for couple of different files.
+1. File with environment properties common to all functions: The file naming convention `{stage}-vars.yml`.
+2. Files with environment properties specific to each ESRI Service provider: The file naming convention for functions specific to a ESRI service provider is {ESRI_Provider}/{stage}-vars.yml.
 
-For example, a deployment with the stage of `dev` and a `--envdir` of `.` will load the `dev-vars.yml` file in the same
-directory as the `serverless.yml` file.
+For example, santaclara_avl & ventura_avl functions process data from Interra Group ESRI service provider. Hence, when deploying these functions to stage `itest` with `envdir` of `.`, serverless
+looks for files itest-vars.yml & interra/itest-vars.yml in the same directory as `serverless.yml` file.
 
 An full sample of the expected serverless variables can be found in the dev-sample-vars.yml
 
