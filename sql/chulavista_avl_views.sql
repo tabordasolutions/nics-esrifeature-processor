@@ -49,7 +49,7 @@ CREATE OR REPLACE VIEW public.northcomm_units_avl AS
     COALESCE(gpf.properties::json ->> 'LocationCity'::text, 'Unavailable'::text) AS "City",
     COALESCE(gpf.properties::json ->> 'Heading'::text, '0'::text) AS "Heading",
     COALESCE(gpf.properties::json ->> 'Speed'::text, '0'::text) AS "Speed",
-    (COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime'::text)::numeric) / 1000::numeric)::double precision), 'YYYY/MM/DD HH:MI:SS AM PT'::text), ' '::text)
+    (COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision) AT TIME ZONE 'US/Pacific', 'YYYY/MM/DD HH:MI:SS AM PT'::text), ' '::text)
     || '<br>'::text) ||
     COALESCE(to_char(to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision), 'YYYY/MM/DD HH:MI:SS AM TZ'::text), ' '::text) AS "UpdatedAt",
     gpf.properties::json ->> 'Master_Incident_ID'::text AS "MasterIncidentID",
