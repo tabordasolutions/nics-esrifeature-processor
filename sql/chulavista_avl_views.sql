@@ -13,8 +13,8 @@ CREATE OR REPLACE VIEW public.montevista_units_avl AS
     COALESCE(NULLIF(gpf.properties::json ->> 'Description'::text, ''),'Unavailable'::text) as "Description",
     COALESCE(gpf.properties::json ->> 'JurisdictionID'::text, 'Unavailable'::text) as "Jurisdiction"
    FROM geojson_point_feeds gpf
-  WHERE gpf.feedname::text = 'montevista_units_avl'::text and gpf.created_at > 'now'::text::date
-  ORDER BY (gpf.properties::json ->> 'StatusTime'::text) DESC;
+  WHERE gpf.feedname::text = 'montevista_units_avl'::text AND to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision) > (now() - '24:00:00'::interval)
+  ORDER BY (gpf.properties::json ->> 'UpdateDateTime_UTC'::text) DESC;
 
 CREATE OR REPLACE VIEW public.heartland_units_avl AS
  SELECT gpf.the_geom AS location,
@@ -34,8 +34,8 @@ CREATE OR REPLACE VIEW public.heartland_units_avl AS
     gpf.properties::json ->> 'IncidentTrackingID'::text AS "IncidentTrackingID",
     gpf.properties::json ->> 'AgencyID'::text AS "AgencyID"
    FROM geojson_point_feeds gpf
-  WHERE gpf.feedname::text = 'heartland_units_avl'::text and gpf.created_at > 'now'::text::date
-  ORDER BY (gpf.properties::json ->> 'StatusTime'::text) DESC;
+  WHERE gpf.feedname::text = 'heartland_units_avl'::text AND to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision) > (now() - '24:00:00'::interval)
+  ORDER BY (gpf.properties::json ->> 'UpdateDateTime_UTC'::text) DESC;
 
 CREATE OR REPLACE VIEW public.northcomm_units_avl AS
  SELECT gpf.the_geom AS location,
@@ -57,5 +57,5 @@ CREATE OR REPLACE VIEW public.northcomm_units_avl AS
     'Point'::text AS "Shape",
     to_char(created_at AT TIME ZONE 'US/Pacific', 'YYYY/MM/DD HH:MI:SS AM PT') AS "SCOUTUpdatedAt"
    FROM geojson_point_feeds gpf
-  WHERE gpf.feedname::text = 'northcomm_units_avl'::text and gpf.created_at > 'now'::text::date
-  ORDER BY (gpf.properties::json ->> 'StatusTime'::text) DESC;
+  WHERE gpf.feedname::text = 'northcomm_units_avl'::text AND to_timestamp((((gpf.properties::json ->> 'UpdateDateTime_UTC'::text)::numeric) / 1000::numeric)::double precision) > (now() - '24:00:00'::interval)
+  ORDER BY (gpf.properties::json ->> 'UpdateDateTime_UTC'::text) DESC;
