@@ -1,0 +1,8 @@
+caloes-vehicles-avl:
+  handler: lambda.handler
+  events: ${file(${self:provider.caloesEnvVarsFile}):caloes_vehicles_avl.events}
+  description: "ETL Cal OES AVL data. The data is stored in SCOUT database."
+  memorySize: 256
+  timeout: 4
+  reservedConcurrency: 1
+  environment: ${file(${self:provider.caloesEnvVarsFile}):caloes_vehicles_avl.environment}
