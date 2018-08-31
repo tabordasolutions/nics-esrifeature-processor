@@ -1,5 +1,6 @@
 CREATE OR REPLACE VIEW public.caloes_vehicles_avl AS
  SELECT gpf.the_geom AS location,
+   gpf.properties::json ->> 'UNIT__'::text AS "UNIT__",
    gpf.properties::json ->> 'OBJECTID'::text AS "ObjectID",
        gpf.properties::json ->> 'VIN' AS "VIN",
        COALESCE(gpf.properties::json ->> 'Heading'::text, '0') AS "Heading",
