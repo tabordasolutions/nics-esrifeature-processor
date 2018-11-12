@@ -25,7 +25,7 @@ santabarbara-avl:
   events: ${file(${self:provider.interraEnvVarsFile}):santabarbara_avl.events}
   description: "ETL SantaBarbara AVL data provided by interra group ESRI service. The data is stored in SCOUT database"
   memorySize: 256
-  timeout: 8
+  timeout: 4
   reservedConcurrency: 1
   environment: ${file(${self:provider.interraEnvVarsFile}):santabarbara_avl.environment}
   environmentSecrets:
