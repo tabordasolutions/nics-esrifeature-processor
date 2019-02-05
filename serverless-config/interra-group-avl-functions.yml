@@ -19,3 +19,14 @@ ventura-avl:
   environment: ${file(${self:provider.interraEnvVarsFile}):ventura_avl.environment}
   environmentSecrets:
     ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
+
+santabarbara-avl:
+  handler: lambda.handler
+  events: ${file(${self:provider.interraEnvVarsFile}):santabarbara_avl.events}
+  description: "ETL SantaBarbara AVL data provided by interra group ESRI service. The data is stored in SCOUT database"
+  memorySize: 256
+  timeout: 4
+  reservedConcurrency: 1
+  environment: ${file(${self:provider.interraEnvVarsFile}):santabarbara_avl.environment}
+  environmentSecrets:
+    ESRISECRET: '/interragroup/${self:provider.stage}/esri-service-secret'
